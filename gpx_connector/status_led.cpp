@@ -110,16 +110,19 @@ void StatusLed::handle_report(const worker_map_t& workers, const handler_map_t& 
               DEBUG_PRINTLN("LED CHANGED TO mode_color_active_disconnected");
               return set_values(mode_color_active_disconnected);
             case ApiConnector::e_api_reporter_error_server_rejected_post_400:
-            case ApiConnector::e_api_reporter_error_server_rejected_post_401:
-            case ApiConnector::e_api_reporter_error_server_rejected_post_403:
-            case ApiConnector::e_api_reporter_error_server_rejected_post_5xx:
               // Server rejected post (auth error / data error / server error) TODO split
               DEBUG_PRINTLN("LED CHANGED TO mode_color_active_remote_error");
               return set_values(mode_color_active_remote_error, 0.5, 50);
+            case ApiConnector::e_api_reporter_error_server_rejected_post_401:
+            case ApiConnector::e_api_reporter_error_server_rejected_post_403:
+              // Server rejected post (auth error / data error / server error) TODO split
+              DEBUG_PRINTLN("LED CHANGED TO mode_color_active_remote_error");
+              return set_values(mode_color_active_remote_error);
+            case ApiConnector::e_api_reporter_error_server_rejected_post_5xx:
             case ApiConnector::e_api_reporter_error_remote_not_available:
               // Server is not available / couldn't be reached
               DEBUG_PRINTLN("LED CHANGED TO mode_color_active_remote_error");
-              return set_values(mode_color_active_remote_error, 0.33, 17);
+              return set_values(mode_color_active_remote_error, 0.25, 10);
             default:
               // No update
               return;
