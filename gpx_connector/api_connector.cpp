@@ -42,8 +42,8 @@ int8_t ApiConnector::handle_produced_work(const worker_map_t& workers) {
     // Wifi is no longer connected and was not able to reconnect
     return e_api_reporter_error_not_connected;
   }
-  const auto& meter_worker = (SmartMeterConnector*) workers.at(k_worker_meter_connector);
-  const auto& inverter_worker = (InverterConnector*) workers.at(k_worker_inverter_connector);
+  const auto& meter_worker = workers.worker<SmartMeterConnector>(k_worker_meter_connector);
+  const auto& inverter_worker = workers.worker<InverterConnector>(k_worker_inverter_connector);
   if(!inverter_worker || !meter_worker) {
     // no new meter data or not yet time to send (or one of the workers is actually missing!)
     DEBUG_PRINTLN("Something serious is going on, we're missing an important worker!");
@@ -85,7 +85,7 @@ ApiConnector::ApiHandlerStatus ApiConnector::send_payload(const char* payload) {
   }
 
   char content_length[5];
-  sprintf(content_length, "%d", strlen(payload));
+  sprintf(content_length, "%u", strlen(payload));
 
   char auth[40];
   sprintf(auth, "Token %s", _config.get_api_key());
@@ -100,7 +100,7 @@ ApiConnector::ApiHandlerStatus ApiConnector::send_payload(const char* payload) {
   int httpResponseCode = http.POST(payload);
 
   String response = http.getString();
-  DEBUG_PRINTF("POST complete, status %d\r\nrepsonse: \r\n\r\n%s\r\n\r\n", httpResponseCode, response.c_str());
+  DEBUG_PRINTF("POST complete, status %d\r\nresponse: \r\n\r\n%s\r\n\r\n", httpResponseCode, response.c_str());
   http.end();  //Free resources
 
   switch(httpResponseCode) {
@@ -208,7 +208,7 @@ uint16_t ApiConnector::add_solar_payload(const InverterData* data, const char* t
   ///    "timestamp": value,
   ///    "solar": value
   ///  }
-  if(data == nullptr || !data->is_valid()) {
+  if(data == nullptr || timestamp == nullptr || !data->is_valid()) {
     // No solar values
     return sprintf(out, "null");
   }

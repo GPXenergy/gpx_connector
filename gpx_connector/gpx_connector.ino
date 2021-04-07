@@ -19,19 +19,28 @@ HardwareSerial& SmartMeterSerialConnection = Serial2;
 LocalStorage config;
 Aggregator aggregator;
 
+// Supervisors
+StatusLed status_led;
+Controller controller(config);
+
 // Workers
 SmartMeterConnector meter_connector(SmartMeterSerialConnection);
 InverterConnector inverter_connector(config);
-ConfigWebServer config_server(config);
+ConfigWebServer config_server(config, status_led);
 AccessPoint access_point(config);
 ModeSwitch mode_switch;
 
 // Data handlers
 ApiConnector api_reporter(config);
 
-// Supervisors
-StatusLed mode_led;
-Controller controller(config);
+
+void status_led_loop(void* param) {
+  for (;;) {
+    status_led.loop();
+    delay(50);
+  }
+}
+
 
 void setup() {
   delay(2000);
@@ -61,12 +70,14 @@ void setup() {
 
   aggregator.register_handler(k_handler_api_reporter, api_reporter);
 
-  aggregator.register_supervisor(mode_led);
+  aggregator.register_supervisor(status_led);
   aggregator.register_supervisor(controller);
 
   // Enable default workers and handlers
   aggregator.set_worker_active(k_worker_mode_switch, true);
   aggregator.set_worker_active(k_worker_wifi_config_server, true);
+
+  xTaskCreate(status_led_loop, "led_loop", configMINIMAL_STACK_SIZE * 3, nullptr, 2, nullptr);
 
   DEBUG_PRINTLN("GPX-Connector initialized!");
 }
@@ -74,5 +85,6 @@ void setup() {
 void loop() {
   aggregator.run();
 }
+
 
 #endif

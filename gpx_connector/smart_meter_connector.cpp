@@ -18,6 +18,7 @@ int8_t SmartMeterConnector::produce_data() {
     _buffer += c;
     if(c == '\n') {
       data.add_line(_buffer);
+      DEBUG_PRINT(_buffer.c_str());
       _buffer.clear();
       if(data.is_complete()) {
         _last_read = millis();

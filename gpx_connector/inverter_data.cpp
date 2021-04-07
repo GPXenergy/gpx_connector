@@ -37,6 +37,6 @@ double InverterData::get_solar() const {
 }
 
 bool InverterData::is_valid() const {
-  // valid after 20 seconds, first few measurements are overpowered
+  // valid after 60 seconds, first few measurements are overpowered
   return millis() > 60000;
 }

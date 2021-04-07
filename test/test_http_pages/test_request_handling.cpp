@@ -22,8 +22,9 @@ void run_server(void* server_arg) {
 void new_wifi_ssid_success() {
   /// Given
   MockLocalStorage config;
+  StatusLed led;
   AccessPoint ap_worker(config);
-  ConfigWebServer server(config);
+  ConfigWebServer server(config, led);
 
   // initialize and activate the config, ap server and config server
   config.initialize();
@@ -56,8 +57,9 @@ void new_wifi_ssid_success() {
 void new_wifi_password_success() {
   /// Given
   MockLocalStorage config;
+  StatusLed led;
   AccessPoint ap_worker(config);
-  ConfigWebServer server(config);
+  ConfigWebServer server(config, led);
 
   // initialize and activate the config, ap server and config server
   config.initialize();

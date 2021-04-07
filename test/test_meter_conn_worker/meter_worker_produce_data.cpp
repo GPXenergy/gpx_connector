@@ -106,7 +106,7 @@ void meter_connector_work_full_data_fail_invalid_crc(void) {
 
   // Then
   TEST_ASSERT_FALSE(result);
-  TEST_ASSERT_EQUAL(meter_connector.get_status(), SmartMeterConnector::Status::e_worker_error);
+  TEST_ASSERT_EQUAL(SmartMeterConnector::Status::e_worker_error, meter_connector.get_status());
 
   const P1Data& data = meter_connector.get_data();
   TEST_ASSERT_EQUAL(P1Data::k_p1_invalid, data.get_status());

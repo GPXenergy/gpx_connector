@@ -30,8 +30,9 @@ class InverterConnector : public Worker<InverterData> {
    */
   int8_t produce_data() override;
 
-  EnergyMonitor energyMonitor;
-  LocalStorage& config;
+  EnergyMonitor _energyMonitor;
+  LocalStorage& _config;
+  double _amps;
 };
 
 #endif //GPXCONNECTOR_INVERTER_CONNECTOR_H

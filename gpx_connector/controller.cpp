@@ -16,7 +16,7 @@ void Controller::reset_system() {
 }
 
 void Controller::handle_report(const worker_map_t& workers, const handler_map_t& handlers) {
-  ModeSwitch* modeSwitch = (ModeSwitch*) workers.at(k_worker_mode_switch);
+  const auto& modeSwitch = workers.worker<ModeSwitch>(k_worker_mode_switch);
   if(modeSwitch->is_fresh() && modeSwitch->get_data() == e_mode_active) {
     // System set to active mode
     // Disable access point

@@ -4,6 +4,15 @@ The GPX-Connector is part of the GPX system to connect a smart meter to the GPX
 multi-user system. It runs on an ESP32, which connects to the smart meter 
 through a RJ11 cable and sends the data over wifi to the GPX API. 
 
+## Latest firmware
+
+Check out the firmware directory for the latest firmware, separated by hardware 
+version. You will find the firmware for your specific hardware in its own directory:
+
+* gpx_connector_v1:
+  * works for prototype version
+* ...
+
 ## Local development setup
 
 The project runs on [PlatformIO](https://platformio.org/), an open source 

@@ -9,7 +9,7 @@
 
 #include "local_storage.h"
 #include "wifi_connection.h"
-
+#include "status_led.h"
 
 /**
  * Class to host a web server for configuring the ESP32. Will set up an access
@@ -17,7 +17,7 @@
  */
 class ConfigWebServer : public Worker<bool> {
  public:
-  explicit ConfigWebServer(LocalStorage& config);
+  explicit ConfigWebServer(LocalStorage& config, StatusLed& status_led);
   virtual ~ConfigWebServer() = default;
 
   /**
@@ -61,6 +61,10 @@ class ConfigWebServer : public Worker<bool> {
 
   WebServer _server;
   LocalStorage& _config;
+
+  // Uses status LED directly to set OTA LED, because
+  // the loop doesnt get to the supervisor during the upload
+  StatusLed& _status_led;
 };
 
 #endif //GPXCONNECTOR_SERVER_H

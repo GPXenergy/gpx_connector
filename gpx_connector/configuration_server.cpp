@@ -23,10 +23,11 @@ T clamp(T2 val, T min, T max) {
   return _val < min ? min : _val > max ? max : _val;
 }
 
-ConfigWebServer::ConfigWebServer(LocalStorage& config)
+ConfigWebServer::ConfigWebServer(LocalStorage& config, StatusLed& status_led)
     : Worker<bool>(false, 0),
       _server(SERVER_WIFI_PORT),
-      _config(config) {
+      _config(config),
+      _status_led(status_led) {
 }
 
 bool ConfigWebServer::activate(bool) {
@@ -52,25 +53,25 @@ void ConfigWebServer::deactivate() {
 }
 
 int8_t ConfigWebServer::produce_data() {
-//  if(_server.clientAvailable()) {
   _server.handleClient();
-//    DEBUG_PRINTLN("New request handled");
-//    data = true;
-//    return e_worker_data_read;
-//  }
-  data = false;
+  if (data) {
+    data = false;
+    return e_worker_data_read;
+  }
   return e_worker_idle;
 }
 
 void ConfigWebServer::add_urls() {
   // Home
   _server.on("/", HTTP_GET, [this]() {
+    data = true;
     _server.sendHeader("Connection", "close");
     _server.send(200, "text/html", HttpPages::get_home_page());
   });
 
   // Configure Device
   _server.on("/device", HTTP_GET, [this]() {
+    data = true;
     _server.sendHeader("Connection", "close");
     _server.send(200, "text/html", HttpPages::get_config_device_page(
         _server.hasArg("success"),
@@ -85,6 +86,7 @@ void ConfigWebServer::add_urls() {
 
   // Configure Connection
   _server.on("/connection", HTTP_GET, [this]() {
+    data = true;
     _server.sendHeader("Connection", "close");
     _server.send(200, "text/html", HttpPages::get_config_connection_page(
         _server.hasArg("success"),
@@ -97,23 +99,27 @@ void ConfigWebServer::add_urls() {
 
   // Save config
   _server.on("/save", HTTP_POST, [this]() {
+    data = true;
     handle_save();
   });
 
   // Upload get
   _server.on("/update", HTTP_GET, [this]() {
+    data = true;
     _server.sendHeader("Connection", "close");
     _server.send(200, "text/html", HttpPages::get_update_page());
   });
 
   // Status get
   _server.on("/status", HTTP_GET, [this]() {
+    data = true;
     _server.sendHeader("Connection", "close");
     _server.send(200, "text/html", HttpPages::get_status_page());
   });
 
   // Upload post
   _server.on("/update", HTTP_POST, [this]() {
+    data = true;
     // Complete
     _server.sendHeader("Connection", "close");
     if(_server.upload().totalSize == 0 || Update.hasError()) {
@@ -124,6 +130,7 @@ void ConfigWebServer::add_urls() {
     _server.client().flush();
   }, [this]() {
     // Progress
+    data = true;
     handle_firmware_OTA_upload();
   });
 
@@ -185,6 +192,7 @@ void ConfigWebServer::handle_firmware_OTA_upload() {
       DEBUG_PRINTF("Update: %s\n", upload.filename.c_str());
       if(Update.begin(UPDATE_SIZE_UNKNOWN)) {
         DEBUG_PRINTLN("Starting update");
+        _status_led.set_ota_updating();
       } else {
         DEBUG_PRINTLN("Unable to start update");
       }

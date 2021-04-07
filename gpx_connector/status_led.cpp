@@ -6,6 +6,7 @@
 #include "identifiers.h"
 #include "smart_meter_connector.h"
 #include "api_connector.h"
+#include "configuration_server.h"
 
 // seconds passed after last meter data was read to go back to idle state LED: 20 seconds
 #define LED_ACTIVE_TO_IDLE_DURATION 20000
@@ -20,6 +21,7 @@ StatusLed::StatusLed() :
         // R    G    B
         {000, 000, 000}, // color off
         {000, 127, 127}, // color config
+        {000, 000, 127}, // color config_updating
         {063, 063, 063}, // color active_idle
         {000, 127, 000}, // color active_connected
         {255, 000, 000}, // color active_disconnected
@@ -66,13 +68,13 @@ void StatusLed::initialize() {
 }
 
 void StatusLed::handle_report(const worker_map_t& workers, const handler_map_t& handlers) {
-  loop();
-  const auto& mode_switch = (ModeSwitch*) workers.at(k_worker_mode_switch);
+  const auto& mode_switch = workers.worker<ModeSwitch>(k_worker_mode_switch);
   // LED first based on mode
   switch(mode_switch->get_data()) {
     case Mode::e_mode_config: {
+      const auto& server = workers.worker<ConfigWebServer>(k_worker_wifi_config_server);
       // Mode is config, show config color if fresh
-      if (mode_switch->is_fresh()) {
+      if (mode_switch->is_fresh() || server->is_fresh()) {
         DEBUG_PRINTLN("LED CHANGED TO mode_color_config");
         return set_values(mode_color_config, 0);
       }
@@ -86,11 +88,11 @@ void StatusLed::handle_report(const worker_map_t& workers, const handler_map_t& 
         return set_values(mode_color_active_idle, 0.25, 10);
       }
 
-      const auto& meter = (SmartMeterConnector*) workers.at(k_worker_meter_connector);
+      const auto& meter = workers.worker<SmartMeterConnector>(k_worker_meter_connector);
       switch(meter->get_status()) {
         case SmartMeterConnector::e_worker_data_read: {
           // Meter data is valid, color based on api connector status
-          const auto& api = (ApiConnector*) handlers.at(k_handler_api_reporter);
+          const auto& api = handlers.handler<ApiConnector>(k_handler_api_reporter);
 
           if(api->get_active_state() == ApiConnector::e_state_activating_failed){
             // Wifi is not connected
@@ -142,4 +144,8 @@ void StatusLed::handle_report(const worker_map_t& workers, const handler_map_t& 
       // No mode yet
       return;
   }
+}
+
+void StatusLed::set_ota_updating() {
+  set_values(mode_color_config_updating, 0.5, 10);
 }

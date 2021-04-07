@@ -14,6 +14,7 @@ class StatusLed : private RGBLed, public Supervisor {
   typedef enum {
     mode_color_off,
     mode_color_config,
+    mode_color_config_updating,
     mode_color_active_idle,
     mode_color_active_connected,
     mode_color_active_disconnected,
@@ -34,6 +35,8 @@ class StatusLed : private RGBLed, public Supervisor {
    *    - example, percentage of 25 with 1 frequency, will 0.25 second LED on then 0.75 second LED off
    */
   void set_values(ModeColor color, double frequency = 0, uint8_t percentage_on = 50);
+
+  void set_ota_updating();
 
   /**
    * Will handle blinking led

@@ -8,17 +8,18 @@ enum MeterParity {
 };
 
 
-
-#define GPX_CONN_VERSION "1.0.0"
+#ifndef GPX_CONN_VERSION
+#define GPX_CONN_VERSION "1.0.dev"
+#endif
 
 /** Debug config **/
 #define ENABLE_DEBUG 1
 #define DEBUG_BAUD 115200
 
 /** Hardware pins settings **/
-#define RGB_LED_PIN_R 13
+#define RGB_LED_PIN_R 14
 #define RGB_LED_PIN_G 12
-#define RGB_LED_PIN_B 14
+#define RGB_LED_PIN_B 13
 // Set this to true if we use anode LED
 #define RGB_STATE_LED_REVERSED false
 
