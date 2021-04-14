@@ -65,6 +65,63 @@ void meter_connector_work_full_data_success(void) {
 }
 
 /**
+ * Test parsing of a valid reading
+ */
+void meter_connector_work_full_data_dsmr_22_success(void) {
+  // Given
+  StreamString meter_stream;
+  meter_stream.print(
+      "/ISk5\\2ME382-1003\r\n"
+      "\r\n"
+      "0-0:96.1.1(4B414C37303035313039373438383132)\r\n"
+      "1-0:1.8.1(18336.285*kWh)\r\n"
+      "1-0:1.8.2(19558.900*kWh)\r\n"
+      "1-0:2.8.1(00000.000*kWh)\r\n"
+      "1-0:2.8.2(00000.000*kWh)\r\n"
+      "0-0:96.14.0(0002)\r\n"
+      "1-0:1.7.0(0000.57*kW)\r\n"
+      "1-0:2.7.0(0000.00*kW)\r\n"
+      "0-0:17.0.0(0999.00*kW)\r\n"
+      "0-0:96.3.10(1)\r\n"
+      "0-0:96.13.1()\r\n"
+      "0-0:96.13.0()\r\n"
+      "0-1:24.1.0(3)\r\n"
+      "0-1:96.1.0(3238303131303031323139323339353132)\r\n"
+      "0-1:24.3.0(210413190000)(00)(60)(1)(0-1:24.2.1)(m3)\r\n"
+      "(16083.008)\r\n"
+      "0-1:24.4.0(1)\r\n"
+      "!\r\n"
+  );
+
+  SmartMeterConnector meter_connector(meter_stream);
+  meter_connector.set_active(true);
+
+  // When
+  bool result = meter_connector.work();
+
+  // Then
+  TEST_ASSERT_TRUE(result);
+  TEST_ASSERT_EQUAL(meter_connector.get_status(), SmartMeterConnector::Status::e_worker_data_read);
+
+  const P1Data& data = meter_connector.get_data();
+  TEST_ASSERT_EQUAL(P1Data::k_p1_valid, data.get_status());
+  TEST_ASSERT_EQUAL(0, data.get_version());
+  TEST_ASSERT_EQUAL_STRING("now", data.get_power_timestamp());
+  TEST_ASSERT_EQUAL_STRING("4B414C37303035313039373438383132", data.get_sn_power());
+  TEST_ASSERT_EQUAL_STRING("18336.285", data.get_import_1());
+  TEST_ASSERT_EQUAL_STRING("19558.900", data.get_import_2());
+  TEST_ASSERT_EQUAL_STRING("00000.000", data.get_export_1());
+  TEST_ASSERT_EQUAL_STRING("00000.000", data.get_export_2());
+  TEST_ASSERT_EQUAL(2, data.get_tariff());
+  TEST_ASSERT_EQUAL_STRING("0000.57", data.get_actual_import());
+  TEST_ASSERT_EQUAL_STRING("0000.00", data.get_actual_export());
+  TEST_ASSERT_EQUAL_STRING("3238303131303031323139323339353132", data.get_sn_gas());
+  TEST_ASSERT_EQUAL_STRING("210413190000", data.get_gas_timestamp());
+  TEST_ASSERT_EQUAL_STRING("16083.008", data.get_gas_import());
+
+}
+
+/**
  * Test parsing of an invalid reading
  */
 void meter_connector_work_full_data_fail_invalid_crc(void) {

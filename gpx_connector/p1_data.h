@@ -100,6 +100,7 @@ class P1Data {
 
   P1DataStatus _status;
   uint16_t _running_crc;
+  bool _expectingGas22;  // For DSMR2.2 gas value is on a separate line
 
   // P1Data content
   uint16_t _version;

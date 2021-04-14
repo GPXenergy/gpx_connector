@@ -9,8 +9,9 @@ void get_status_page_render_success();
 void get_pure_css();
 void get_favicon();
 
-void new_wifi_ssid_success();
-void new_wifi_password_success();
+void get_home_page_success();
+void post_new_device_config_success();
+void post_new_connection_config_success();
 
 void setup() {
   delay(2000);
@@ -25,8 +26,9 @@ void setup() {
   RUN_TEST(get_pure_css);
   RUN_TEST(get_favicon);
 
-  RUN_TEST(new_wifi_ssid_success);
-  RUN_TEST(new_wifi_password_success);
+  RUN_TEST(get_home_page_success);
+  RUN_TEST(post_new_device_config_success);
+  RUN_TEST(post_new_connection_config_success);
 
   // Unit test done
   UNITY_END();

@@ -3,8 +3,8 @@
 
 
 enum MeterParity {
-  e_meter_parity_7E1,
-  e_meter_parity_8N1,
+  e_meter_parity_7E1 = 0,
+  e_meter_parity_8N1 = 1,
 };
 
 

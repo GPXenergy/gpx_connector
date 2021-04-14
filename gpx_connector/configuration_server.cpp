@@ -54,7 +54,7 @@ void ConfigWebServer::deactivate() {
 
 int8_t ConfigWebServer::produce_data() {
   _server.handleClient();
-  if (data) {
+  if(data) {
     data = false;
     return e_worker_data_read;
   }
@@ -168,6 +168,12 @@ void ConfigWebServer::handle_save() {
   }
   if(_server.hasArg(FORM_NAME_API_KEY)) {
     _config.set_api_key(_server.arg(FORM_NAME_API_KEY).c_str(), false);
+  }
+  if(_server.hasArg(FORM_NAME_METER_BAUD)) {
+    _config.set_meter_baud(_server.arg(FORM_NAME_METER_BAUD).toInt(), false);
+  }
+  if(_server.hasArg(FORM_NAME_METER_PARITY)) {
+    _config.set_meter_parity(static_cast<MeterParity>(_server.arg(FORM_NAME_METER_PARITY).toInt()), false);
   }
   if(_server.hasArg(FORM_NAME_INVERTER_ENABLED)) {
     _config.set_inverter_enabled(_server.arg(FORM_NAME_INVERTER_ENABLED) == "1", false);
