@@ -201,60 +201,46 @@ void P1Data::add_data_line(const String& data_line) {
 
   if(data_line.startsWith(F("1-3:0.2.8"))) {
     // Version - 1-3:0.2.8(42)
-    Serial.println("parsing version");
     sscanf(data_line.c_str(), "1-3:0.2.8(%hu)", &_version);
   } else if(data_line.startsWith(F("0-0:1.0.0"))) {
     // Moment - 0-0:1.0.0(170108161107W)
-    Serial.println("parsing power_timestamp");
     sscanf(data_line.c_str(), "0-0:1.0.0(%15[^)])", _power_timestamp);
   } else if(data_line.startsWith(F("0-0:96.1.1"))) {
     // Serial number power - 0-0:96.1.1(4530303331303033303031363939353135)
-    Serial.println("parsing serial_number_power");
     sscanf(data_line.c_str(), "0-0:96.1.1(%39[^)])", _serial_number_power);
   } else if(data_line.startsWith(F("1-0:1.8.1"))) {
     // Import tariff 1 - 1-0:1.8.1(002074.842*kWh)
-    Serial.println("parsing import_tariff_1");
     sscanf(data_line.c_str(), "1-0:1.8.1(%10[0-9.])", _import_tariff_1);
   } else if(data_line.startsWith(F("1-0:1.8.2"))) {
     // Import tariff 2 - 1-0:1.8.2(000881.383*kWh)
-    Serial.println("parsing import_tariff_2");
     sscanf(data_line.c_str(), "1-0:1.8.2(%10[0-9.])", _import_tariff_2);
   } else if(data_line.startsWith(F("1-0:2.8.1"))) {
     // Export tariff 1 - 1-0:2.8.1(000010.981*kWh)
-    Serial.println("parsing export_tariff_1");
     sscanf(data_line.c_str(), "1-0:2.8.1(%10[0-9.])", _export_tariff_1);
   } else if(data_line.startsWith(F("1-0:2.8.2"))) {
     // Export tariff 2 - 1-0:2.8.2(000028.031*kWh)
-    Serial.println("parsing export_tariff_2");
     sscanf(data_line.c_str(), "1-0:2.8.2(%10[0-9.])", _export_tariff_2);
   } else if(data_line.startsWith(F("0-0:96.14.0"))) {
     // Tariff - 0-0:96.14.0(0001)
-    Serial.println("parsing tariff");
     sscanf(data_line.c_str(), "0-0:96.14.0(%hu)", &_tariff);
   } else if(data_line.startsWith(F("1-0:1.7.0"))) {
     // Actual import - 1-0:1.7.0(00.494*kW)
-    Serial.println("parsing actual_import");
     sscanf(data_line.c_str(), "1-0:1.7.0(%10[0-9.])", _actual_import);
   } else if(data_line.startsWith(F("1-0:2.7.0"))) {
     // Actual export - 1-0:2.7.0(00.000*kW)
-    Serial.println("parsing actual_export");
     sscanf(data_line.c_str(), "1-0:2.7.0(%10[0-9.])", _actual_export);
   } else if(data_line.startsWith(F("0-1:96.1.0"))) {
     // Serial number gas - 0-1:96.1.0(4730303139333430323231313938343135)
-    Serial.println("parsing serial_number_gas");
     sscanf(data_line.c_str(), "0-1:96.1.0(%39[^)])", _serial_number_gas);
   } else if(data_line.startsWith(F("0-1:24.2.1"))) {
     // Gas timestamp / gas import - 0-1:24.2.1(170108160000W)(01234.000*m3)
-    Serial.println("parsing gas_timestamp_import");
     sscanf(data_line.c_str(), "0-1:24.2.1(%15[^)])(%10[0-9.])", _gas_timestamp, _gas_import);
   } else if(data_line.startsWith(F("0-1:24.3.0"))) {
     // Gas timestamp / gas import - 0-1:24.3.0(210413190000)(00)(60)(1)(0-1:24.2.1)(m3)
-    Serial.println("parsing dsmr2.2_gas_timestamp");
     sscanf(data_line.c_str(), "0-1:24.3.0(%15[^)])", _gas_timestamp);
     _expectingGas22 = true;
   } else if(data_line.startsWith(F("(")) && _expectingGas22) {
     // Gas timestamp / gas import - 0-1:24.3.0(210413190000)(00)(60)(1)(0-1:24.2.1)(m3)
-    Serial.println("parsing dsmr2.2_gas_import");
     sscanf(data_line.c_str(), "(%10[0-9.])", _gas_import);
     _expectingGas22 = false;
   }

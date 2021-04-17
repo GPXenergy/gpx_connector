@@ -4,8 +4,8 @@
 SmartMeterConnector::SmartMeterConnector(Stream& serial_connection) :
     Worker<P1Data>(),
     _meter_connection_stream(serial_connection),
-    _buffer("") ,
-    _last_read(0){
+    _buffer(""),
+    _last_read(0) {
 }
 
 uint32_t SmartMeterConnector::get_last_read() const {
@@ -22,6 +22,7 @@ int8_t SmartMeterConnector::produce_data() {
       _buffer.clear();
       if(data.is_complete()) {
         _last_read = millis();
+//        return Worker::e_worker_idle;
         return data.valid_reading() ? Worker::e_worker_data_read : Worker::e_worker_error;
       }
     }

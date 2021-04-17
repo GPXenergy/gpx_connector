@@ -40,7 +40,7 @@ enum MeterParity {
 #define ACCESS_POINT_NMASK      {255, 255, 255, 0}
 
 /** Default ESP configurations **/
-#define D_ACCESS_POINT_SSID     "GPXConnector"
+#define D_ACCESS_POINT_SSID     "GPXconnector"
 #define D_ACCESS_POINT_PASSWORD "smartgpx"
 #define D_WIFI_SSID             ""
 #define D_WIFI_PASSWORD         ""

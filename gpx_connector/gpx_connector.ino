@@ -54,12 +54,14 @@ void setup() {
   // Start serial connection to meter
   switch (config.get_meter_parity()) {
     case e_meter_parity_7E1:
-      SmartMeterSerialConnection.begin(config.get_meter_baud(), SERIAL_8N1);
-      break;
-    case e_meter_parity_8N1:
       SmartMeterSerialConnection.begin(config.get_meter_baud(), SERIAL_7E1);
       break;
+    case e_meter_parity_8N1:
+      SmartMeterSerialConnection.begin(config.get_meter_baud(), SERIAL_8N1);
+      break;
   }
+
+  SmartMeterSerialConnection.setRxBufferSize(4096);
 
   // Setup aggregator, which will initialize the workers/handlers/supervisors
   aggregator.register_worker(k_worker_wifi_access_point, access_point);

@@ -16,6 +16,8 @@ class SmartMeterConnector : public Worker<P1Data> {
   explicit SmartMeterConnector(Stream& _serial_connection);
   virtual ~SmartMeterConnector() = default;
 
+ public:
+
   uint32_t get_last_read() const;
 
  private:
