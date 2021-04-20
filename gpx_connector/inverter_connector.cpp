@@ -44,10 +44,10 @@ int8_t InverterConnector::produce_data() {
   double kWatts = 0;
   switch(_config.get_inverter_sensor_amps()) {
     case 30:
-      kWatts = amps * HOME_VOLTAGE_400 / 1000;
+      kWatts = amps * HOME_VOLTAGE_230 / 1000;
       break;
     case 50:
-      kWatts = amps * HOME_VOLTAGE_230 / 1000;
+      kWatts = amps * HOME_VOLTAGE_400 / 1000;
       break;
   }
   data.set_solar(kWatts);
