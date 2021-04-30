@@ -33,7 +33,7 @@ bool InverterConnector::activate(bool retry) {
   }
   _amps = static_cast<double>(_config.get_inverter_sensor_amps());
   // configure monitor library
-  _energyMonitor.current(INVERTER_ADC_INPUT, _amps);
+  _energyMonitor.current(INVERTER_ADC_INPUT_PIN, _amps);
   return true;
 }
 

@@ -23,9 +23,11 @@ enum MeterParity {
 // Set this to true if we use anode LED
 #define RGB_STATE_LED_REVERSED false
 
+#define RESET_BUTTON_PIN 0
+
 #define MODE_SWITCH_PIN 18
 
-#define INVERTER_ADC_INPUT 34
+#define INVERTER_ADC_INPUT_PIN 34
 
 /** API connector settings **/
 #define API_HOST "dashboard.gpx.nl"

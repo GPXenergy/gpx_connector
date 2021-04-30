@@ -13,6 +13,7 @@
 #include "identifiers.h"
 #include "mode_switch.h"
 #include "inverter_connector.h"
+#include "button.h"
 
 HardwareSerial& SmartMeterSerialConnection = Serial2;
 
@@ -24,6 +25,7 @@ StatusLed status_led;
 Controller controller(config);
 
 // Workers
+Button reset_button(RESET_BUTTON_PIN);
 SmartMeterConnector meter_connector(SmartMeterSerialConnection);
 InverterConnector inverter_connector(config);
 ConfigWebServer config_server(config, status_led);
@@ -61,9 +63,21 @@ void setup() {
       break;
   }
 
+  // Set gpio pin configurations
+  gpio_config_t io_conf{
+      .pin_bit_mask = 1ULL<<RESET_BUTTON_PIN,
+      .mode = GPIO_MODE_INPUT,
+      .pull_up_en = GPIO_PULLUP_ENABLE,
+      .pull_down_en = GPIO_PULLDOWN_DISABLE,
+      .intr_type = GPIO_INTR_DISABLE,
+  };
+  gpio_config(&io_conf);
+  gpio_install_isr_service(ESP_INTR_FLAG_LEVEL1);
+
   SmartMeterSerialConnection.setRxBufferSize(4096);
 
   // Setup aggregator, which will initialize the workers/handlers/supervisors
+  aggregator.register_worker(k_worker_reset_button, reset_button);
   aggregator.register_worker(k_worker_wifi_access_point, access_point);
   aggregator.register_worker(k_worker_meter_connector, meter_connector);
   aggregator.register_worker(k_worker_inverter_connector, inverter_connector);
@@ -76,6 +90,7 @@ void setup() {
   aggregator.register_supervisor(controller);
 
   // Enable default workers and handlers
+  aggregator.set_worker_active(k_worker_reset_button, true);
   aggregator.set_worker_active(k_worker_mode_switch, true);
   aggregator.set_worker_active(k_worker_wifi_config_server, true);
 

@@ -5,6 +5,7 @@
  * The worker identifiers in the system
  */
 enum DataWorkers {
+  k_worker_reset_button,
   k_worker_meter_connector,
   k_worker_inverter_connector,
   k_worker_wifi_access_point,
