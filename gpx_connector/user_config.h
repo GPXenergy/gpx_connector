@@ -50,7 +50,7 @@ enum MeterParity {
 #define D_METER_BAUD            115200
 #define D_METER_PARITY          MeterParity::e_meter_parity_8N1
 #define D_INVERTER_ENABLED      false
-#define D_INVERTER_SENSOR_AMPS  50
+#define D_INVERTER_SENSOR_AMPS  30
 #define D_APIKEY                ""
 #define D_USE_DEV_SERVER        false
 
