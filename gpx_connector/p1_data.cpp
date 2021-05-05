@@ -1,10 +1,7 @@
 #include <string.h>
 #include <stdio.h>
-#include <math.h>
-#include <HardwareSerial.h>
 
 #include "p1_data.h"
-#include "debugger.h"
 
 P1Data::P1Data() :
     _status(k_p1_empty),
@@ -165,7 +162,6 @@ const char* P1Data::get_gas_import() const {
 void P1Data::add_header_line(const String& header_line) {
   if(header_line.startsWith(F("/"))) {
     crc_16(header_line);
-    Serial.println("HEADER");
     _status = k_p1_gathering;
     return;
   }
@@ -182,11 +178,9 @@ void P1Data::add_data_line(const String& data_line) {
 
       // Set status based on crc
       _status = message_crc == _running_crc ? k_p1_valid : k_p1_invalid;
-      Serial.printf("MESSAGE %s CRC %d, RUNNING %d  - status %d\r\n", data_line.c_str(), message_crc, _running_crc, _status);
     } else {
       // No CRC to check
       _status = k_p1_valid;
-      Serial.printf("NO MESSAGE CRC status %d\r\n", _status);
 
       if(strlen(_power_timestamp) == 0) {
         // this was a 2.2 message, which doesnt have power timestamps. set "now" for api to handle

@@ -25,7 +25,6 @@ void InverterConnector::initialize() {
   // Setup ACD pin
   adc1_config_channel_atten(ADC1_CHANNEL_6, ADC_ATTEN_DB_11);
   analogReadResolution(ADC_BITS);
-  Serial.begin(115200);
 }
 
 bool InverterConnector::activate(bool retry) {
