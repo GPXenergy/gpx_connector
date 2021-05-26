@@ -80,7 +80,8 @@ void ConfigWebServer::add_urls() {
         _config.get_meter_baud(),
         _config.get_meter_parity(),
         _config.get_inverter_enabled(),
-        _config.get_inverter_sensor_amps()
+        _config.get_current_sensor_amps(),
+        _config.get_phase_type()
     ));
   });
 
@@ -178,8 +179,11 @@ void ConfigWebServer::handle_save() {
   if(_server.hasArg(FORM_NAME_INVERTER_ENABLED)) {
     _config.set_inverter_enabled(_server.arg(FORM_NAME_INVERTER_ENABLED) == "1", false);
   }
-  if(_server.hasArg(FORM_NAME_INVERTER_CURRENT_SENSOR)) {
-    _config.set_inverter_sensor_amps(_server.arg(FORM_NAME_INVERTER_CURRENT_SENSOR).toInt(), false);
+  if(_server.hasArg(FORM_NAME_CURRENT_SENSOR_AMPS)) {
+    _config.set_current_sensor_amps(_server.arg(FORM_NAME_CURRENT_SENSOR_AMPS).toInt(), false);
+  }
+  if(_server.hasArg(FORM_NAME_PHASE_TYPE)) {
+    _config.set_phase_type(_server.arg(FORM_NAME_PHASE_TYPE).toInt(), false);
   }
   if(_server.hasArg(FORM_NAME_USE_DEV)) {
     _config.set_use_dev(_server.arg(FORM_NAME_USE_DEV) == "1", false);

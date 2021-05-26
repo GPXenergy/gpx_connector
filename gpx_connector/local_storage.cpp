@@ -14,7 +14,8 @@ const char* key_api_key = "api_key";
 const char* key_meter_baud = "meter_baud";
 const char* key_meter_parity = "meter_parity";
 const char* key_inverter_enabled = "inv_enabled";
-const char* key_inverter_sensor_amps = "inv_amps";
+const char* key_current_sensor_amps = "inv_amps";
+const char* key_phase_type = "inv_phase";
 const char* key_use_dev = "use_dev";
 
 LocalStorage::LocalStorage() :
@@ -26,7 +27,8 @@ LocalStorage::LocalStorage() :
     _meter_baud(D_METER_BAUD),
     _meter_parity(D_METER_PARITY),
     _inverter_enabled(D_INVERTER_ENABLED),
-    _inverter_sensor_amps(D_INVERTER_SENSOR_AMPS),
+    _current_sensor_amps(D_INVERTER_SENSOR_AMPS),
+    _phase_type(D_INVERTER_PHASE_TYPE),
     _use_dev(D_USE_DEV_SERVER),
     _memory() {
 }
@@ -41,7 +43,8 @@ void LocalStorage::reset_defaults() {
     set_meter_baud(D_METER_BAUD, true);
     set_meter_parity(D_METER_PARITY, true);
     set_inverter_enabled(D_INVERTER_ENABLED, true);
-    set_inverter_sensor_amps(D_INVERTER_SENSOR_AMPS, true);
+    set_current_sensor_amps(D_INVERTER_SENSOR_AMPS, true);
+    set_phase_type(D_INVERTER_PHASE_TYPE, true);
     set_use_dev(D_USE_DEV_SERVER, true);
   }
 }
@@ -78,8 +81,12 @@ bool LocalStorage::get_inverter_enabled() const {
   return _inverter_enabled;
 }
 
-uint8_t LocalStorage::get_inverter_sensor_amps() const {
-  return _inverter_sensor_amps;
+uint8_t LocalStorage::get_current_sensor_amps() const {
+  return _current_sensor_amps;
+}
+
+uint8_t LocalStorage::get_phase_type() const {
+  return _phase_type;
 }
 
 bool LocalStorage::get_use_dev() const {
@@ -182,14 +189,26 @@ void LocalStorage::set_inverter_enabled(bool inverter_enabled, bool force) {
   }
 }
 
-void LocalStorage::set_inverter_sensor_amps(uint8_t inverter_sensor_amps, bool force) {
-  if(force || (inverter_sensor_amps != _inverter_sensor_amps)) {
+void LocalStorage::set_current_sensor_amps(uint8_t current_sensor_amps, bool force) {
+  if(force || (current_sensor_amps != _current_sensor_amps)) {
     if(_memory.begin(memory_name)) {
-      _inverter_sensor_amps = inverter_sensor_amps;
-      _memory.putUChar(key_inverter_sensor_amps, _inverter_sensor_amps);
+      _current_sensor_amps = current_sensor_amps;
+      _memory.putUChar(key_current_sensor_amps, _current_sensor_amps);
       _memory.end();
     } else {
-      DEBUG_PRINTLN("unable to save new value for inverter_sensor_amps");
+      DEBUG_PRINTLN("unable to save new value for current_sensor_amps");
+    }
+  }
+}
+
+void LocalStorage::set_phase_type(uint8_t phase_type, bool force) {
+  if(force || (phase_type != _phase_type)) {
+    if(_memory.begin(memory_name)) {
+      _phase_type = phase_type;
+      _memory.putUChar(key_phase_type, _phase_type);
+      _memory.end();
+    } else {
+      DEBUG_PRINTLN("unable to save new value for phase_type");
     }
   }
 }
@@ -240,7 +259,8 @@ bool LocalStorage::initialize() {
   _meter_baud = _memory.getULong(key_meter_baud, D_METER_BAUD);
   _meter_parity = static_cast<MeterParity>(_memory.getUShort(key_meter_parity, D_METER_PARITY));
   _inverter_enabled = _memory.getBool(key_inverter_enabled, D_INVERTER_ENABLED);
-  _inverter_sensor_amps = _memory.getUChar(key_inverter_sensor_amps, D_INVERTER_SENSOR_AMPS);
+  _current_sensor_amps = _memory.getUChar(key_current_sensor_amps, D_INVERTER_SENSOR_AMPS);
+  _phase_type = _memory.getUChar(key_phase_type, D_INVERTER_PHASE_TYPE);
   _use_dev = _memory.getBool(key_use_dev, D_USE_DEV_SERVER);
   _memory.end();
   return true;

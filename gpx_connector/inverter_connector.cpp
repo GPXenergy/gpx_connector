@@ -6,12 +6,9 @@
 
 #define SENSOR_SAMPLE_SIZE 1480
 
-// 400 * sqrt(3) ,  for three-phase current in the inverter ( 400 line current )
-#define HOME_VOLTAGE_400 692.820323028
-#define HOME_VOLTAGE_400_AMPS_THRESHOLD 0.5
-// just 230, no three-phase current
-#define HOME_VOLTAGE_230 230.0
-#define HOME_VOLTAGE_230_AMPS_THRESHOLD 0.8
+#define HOME_VOLTAGE_1_PHASE_POWER 230.0
+#define HOME_VOLTAGE_3_PHASE_POWER 690.0
+#define AMPS_THRESHOLD 0.5
 
 // Force EmonLib to use 10bit ADC resolution
 #define ADC_BITS    10
@@ -31,7 +28,7 @@ bool InverterConnector::activate(bool retry) {
   if(!_config.get_inverter_enabled()) {
     return false;
   }
-  _amps = static_cast<double>(_config.get_inverter_sensor_amps());
+  _amps = static_cast<double>(_config.get_current_sensor_amps());
   // configure monitor library
   _energyMonitor.current(INVERTER_ADC_INPUT_PIN, _amps);
   return true;
@@ -39,17 +36,20 @@ bool InverterConnector::activate(bool retry) {
 
 int8_t InverterConnector::produce_data() {
   double amps = _energyMonitor.calcIrms(SENSOR_SAMPLE_SIZE); // Calculate Irms only
+  amps = amps < AMPS_THRESHOLD ? 0 : amps;
   // Calc wattage based on voltage
   double kWatts = 0;
-  switch(_config.get_inverter_sensor_amps()) {
-    case 30:
-      amps = amps < HOME_VOLTAGE_230_AMPS_THRESHOLD ? 0 : amps;
-      kWatts = amps * HOME_VOLTAGE_230 / 1000;
+  switch(_config.get_phase_type()) {
+    case 1:
+      kWatts = amps * HOME_VOLTAGE_1_PHASE_POWER / 1000;
       break;
-    case 50:
-      amps = amps < HOME_VOLTAGE_400_AMPS_THRESHOLD ? 0 : amps;
-      kWatts = amps * HOME_VOLTAGE_400 / 1000;
+    case 3:
+      // Using 690V for 3 phase power
+      kWatts = amps * HOME_VOLTAGE_3_PHASE_POWER / 1000;
       break;
+    default:
+      // Invalid settings
+      return Worker::e_worker_error;
   }
 
   data.set_solar(kWatts);

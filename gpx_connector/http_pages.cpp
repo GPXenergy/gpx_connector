@@ -97,7 +97,7 @@ const char* HttpPages::get_home_page() {
       "<li><a href='/connection'>Configure your connection to the API</a></li>"
       "<li><a href='/update'>Update the firmware</a></li>"
       "</ul>"
-      "More information about configurations in the <a href='#' target='_blank'>User manual (TODO)</a>. "
+      "More information about configurations in the <a href='dashboard.gpx.nl/manual' target='_blank'>User manual</a>."
       "</p>",
       GPX_CONN_VERSION
   );
@@ -146,7 +146,8 @@ const char* HttpPages::get_config_device_page(
     uint32_t meter_conn_baud,
     uint16_t meter_conn_parity,
     bool inverter_enabled,
-    uint8_t inverter_sensor_amps
+    uint8_t current_sensor_amps,
+    uint8_t phase_type
 ) {
   return render_full_page(
       TITLE_CONF_DEVICE,
@@ -165,7 +166,7 @@ const char* HttpPages::get_config_device_page(
       "<label for='" FORM_NAME_AP_PASS "'>GPX-Connector wifi password</label>"
       "<input type='text' name='" FORM_NAME_AP_PASS "' id='" FORM_NAME_AP_PASS "' value='%s'>"
       "<span class='pure-form-message'>"
-      "Password for the configuration WiFi network"
+      "Password for the configuration WiFi network (either empty or at least 8 characters long)"
       "</span>"
 
       "<h2>Smart meter settings</h2>"
@@ -204,11 +205,21 @@ const char* HttpPages::get_config_device_page(
       "Solar inverter is not fully supported yet, enable at own risk."
       "</span>"
 
-      // GPX-Connector inverter connection sensor type
-      "<label for='" FORM_NAME_INVERTER_CURRENT_SENSOR "'>Current sensor amps per 1v</label>"
-      "<select name='" FORM_NAME_INVERTER_CURRENT_SENSOR "' id='" FORM_NAME_INVERTER_CURRENT_SENSOR "'>"
+      // GPX-Connector current sensor type
+      "<label for='" FORM_NAME_CURRENT_SENSOR_AMPS "'>Current sensor amps per 1v</label>"
+      "<select name='" FORM_NAME_CURRENT_SENSOR_AMPS "' id='" FORM_NAME_CURRENT_SENSOR_AMPS "'>"
       "<option %s value='30'>30A/1v</option>"
       "<option %s value='50'>50A/1v</option>"
+      "</select>"
+      "<span class='pure-form-message'>"
+      "See user manual for more information."
+      "</span>"
+
+      // GPX-Connector phase type
+      "<label for='" FORM_NAME_PHASE_TYPE "'>Phase type (where current sensor is connected)</label>"
+      "<select name='" FORM_NAME_PHASE_TYPE "' id='" FORM_NAME_PHASE_TYPE "'>"
+      "<option %s value='1'>1-phase power</option>"
+      "<option %s value='3'>3-phase power</option>"
       "</select>"
       "<span class='pure-form-message'>"
       "See user manual for more information."
@@ -227,8 +238,10 @@ const char* HttpPages::get_config_device_page(
       meter_conn_parity == MeterParity::e_meter_parity_8N1 ? "selected" : "",
       inverter_enabled ? "" : "checked",
       inverter_enabled ? "checked" : "",
-      inverter_sensor_amps == 30 ? "selected" : "",
-      inverter_sensor_amps == 50 ? "selected" : "",
+      current_sensor_amps == 30 ? "selected" : "",
+      current_sensor_amps == 50 ? "selected" : "",
+      phase_type == 1 ? "selected" : "",
+      phase_type == 3 ? "selected" : "",
       display_success ? success_message : ""
   );
 }

@@ -81,24 +81,27 @@ void post_new_device_config_success() {
   const char* new_ap_ssid = "newapssid!!!";
   const char* new_ap_password = "newappassword!!!";
   const char* new_meter_baud = "9800";
-  const char* new_meter_parity = "7N1";
+  const MeterParity new_meter_parity = MeterParity::e_meter_parity_7E1;
   const char* new_inverter_enabled = "1";
-  const char* new_inverter_current_sensor = "30";
+  const char* new_inverter_current_sensor = "50";
+  const char* new_phase_type = "3";
 
   sprintf(
       buffer,
       "%s=%s&"
       "%s=%s&"
       "%s=%s&"
+      "%s=%d&"
       "%s=%s&"
       "%s=%s&"
-      "%s=%s&",
+      "%s=%s",
       FORM_NAME_AP_SSID, new_ap_ssid,
       FORM_NAME_AP_PASS, new_ap_password,
       FORM_NAME_METER_BAUD, new_meter_baud,
       FORM_NAME_METER_PARITY, new_meter_parity,
       FORM_NAME_INVERTER_ENABLED, new_inverter_enabled,
-      FORM_NAME_INVERTER_CURRENT_SENSOR, new_inverter_current_sensor
+      FORM_NAME_CURRENT_SENSOR_AMPS, new_inverter_current_sensor,
+      FORM_NAME_PHASE_TYPE, new_phase_type
   );
 
   /// When
@@ -116,7 +119,8 @@ void post_new_device_config_success() {
   TEST_ASSERT_EQUAL(9800, config.get_meter_baud());
   TEST_ASSERT_EQUAL(e_meter_parity_7E1, config.get_meter_parity());
   TEST_ASSERT_TRUE(config.get_inverter_enabled());
-  TEST_ASSERT_EQUAL(30, config.get_inverter_sensor_amps());
+  TEST_ASSERT_EQUAL(50, config.get_current_sensor_amps());
+  TEST_ASSERT_EQUAL(3, config.get_phase_type());
 
   // cleanup
   ap_worker.set_active(false);
@@ -158,7 +162,7 @@ void post_new_connection_config_success() {
       "%s=%s&"
       "%s=%s&"
       "%s=%s&"
-      "%s=%s&",
+      "%s=%s",
       FORM_NAME_WIFI_SSID, new_wifi_ssid,
       FORM_NAME_WIFI_PASS, new_wifi_password,
       FORM_NAME_API_KEY, new_api_key,

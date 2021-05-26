@@ -40,7 +40,8 @@ class LocalStorage {
   virtual uint32_t get_meter_baud() const final;
   virtual MeterParity get_meter_parity() const final;
   virtual bool get_inverter_enabled() const final;
-  virtual uint8_t get_inverter_sensor_amps() const final;
+  virtual uint8_t get_current_sensor_amps() const final;
+  virtual uint8_t get_phase_type() const final;
   virtual bool get_use_dev() const final;
 
 
@@ -52,7 +53,8 @@ class LocalStorage {
   virtual void set_meter_baud(uint32_t meter_baud, bool force);
   virtual void set_meter_parity(MeterParity meter_parity, bool force);
   virtual void set_inverter_enabled(bool inverter_enabled, bool force);
-  virtual void set_inverter_sensor_amps(uint8_t inverter_sensor_amps, bool force);
+  virtual void set_current_sensor_amps(uint8_t current_sensor_amps, bool force);
+  virtual void set_phase_type(uint8_t phase_type, bool force);
   virtual void set_use_dev(bool use_dev, bool force);
 
  protected:
@@ -75,7 +77,8 @@ class LocalStorage {
 
   // Device config, inverter
   bool _inverter_enabled;
-  uint8_t _inverter_sensor_amps;
+  uint8_t _current_sensor_amps;
+  uint8_t _phase_type;
 
   // Other config
   bool _use_dev;

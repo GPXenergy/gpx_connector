@@ -62,9 +62,15 @@ class MockLocalStorage : public LocalStorage {
     }
   }
 
-  void set_inverter_sensor_amps(uint8_t inverter_sensor_amps, bool force) override {
-    if(force || (_inverter_sensor_amps != inverter_sensor_amps)) {
-      _inverter_sensor_amps = inverter_sensor_amps;
+  void set_current_sensor_amps(uint8_t inverter_sensor_amps, bool force) override {
+    if(force || (_current_sensor_amps != inverter_sensor_amps)) {
+      _current_sensor_amps = inverter_sensor_amps;
+    }
+  }
+
+  void set_phase_type(uint8_t phase_type, bool force) override {
+    if(force || (_phase_type != phase_type)) {
+      _phase_type = phase_type;
     }
   }
 
@@ -87,7 +93,8 @@ class MockLocalStorage : public LocalStorage {
     _meter_baud = D_METER_BAUD;
     _meter_parity = D_METER_PARITY;
     _inverter_enabled = D_INVERTER_ENABLED;
-    _inverter_sensor_amps = D_INVERTER_SENSOR_AMPS;
+    _current_sensor_amps = D_INVERTER_SENSOR_AMPS;
+    _phase_type = D_INVERTER_PHASE_TYPE;
     _use_dev = D_USE_DEV_SERVER;
     return true;
   }

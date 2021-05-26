@@ -12,7 +12,8 @@
 #define FORM_NAME_METER_BAUD "d_mb"
 #define FORM_NAME_METER_PARITY "d_mp"
 #define FORM_NAME_INVERTER_ENABLED "d_ie"
-#define FORM_NAME_INVERTER_CURRENT_SENSOR "d_ic"
+#define FORM_NAME_CURRENT_SENSOR_AMPS "d_ic"
+#define FORM_NAME_PHASE_TYPE "d_ip"
 
 // Connection config form names
 #define FORM_NAME_WIFI_SSID "c_ws"
@@ -54,7 +55,8 @@ class HttpPages {
       uint32_t meter_conn_baud,
       uint16_t meter_conn_parity,
       bool inverter_enabled,
-      uint8_t inverter_sensor_amps
+      uint8_t current_sensor_amps,
+      uint8_t phase_type
   );
 
   /**

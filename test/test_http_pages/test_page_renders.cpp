@@ -20,7 +20,8 @@ void get_config_device_page_render_success() {
       115200,
       e_meter_parity_8N1,
       true,
-      50
+      50,
+      3
   ));
   TEST_ASSERT_NOT_NULL(HttpPages::get_config_device_page(
       true,
@@ -29,7 +30,8 @@ void get_config_device_page_render_success() {
       9800,
       e_meter_parity_7E1,
       true,
-      50
+      30,
+      1
   ));
 }
 
