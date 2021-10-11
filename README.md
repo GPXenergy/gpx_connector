@@ -27,6 +27,6 @@ Some platformio commands:
   * Compile the program on default environment (GPXConnector)
 * `pio run -t upload -e GPXConnector`
   * Compile and upload the program for specific environment
-* `pio test -e wronver`
+* `pio test -e wrover`
   * Run all the unit tests on the wrover environment
 
