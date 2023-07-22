@@ -9,7 +9,7 @@ through a RJ11 cable and sends the data over wifi to the GPX API.
 Check out the firmware directory for the latest firmware, separated by hardware 
 version. You will find the firmware for your specific hardware in its own directory:
 
-* gpx_connector_v1:
+* gpx_connector_v1.0.7:
   * works for prototype version
 * ...
 
@@ -27,6 +27,6 @@ Some platformio commands:
   * Compile the program on default environment (GPXConnector)
 * `pio run -t upload -e GPXConnector`
   * Compile and upload the program for specific environment
-* `pio test -e wronver`
+* `pio test -e wrover`
   * Run all the unit tests on the wrover environment
 
