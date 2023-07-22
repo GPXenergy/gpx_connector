@@ -7,6 +7,7 @@ P1Data::P1Data() :
     _status(k_p1_empty),
     _running_crc(0),
     _expectingGas22(false),
+    _gas_bus(1),
     _version(0),
     _power_timestamp{""},
     _serial_number_power{""},
@@ -26,6 +27,7 @@ P1Data::P1Data(const P1Data& copy) :
     _status(copy._status),
     _running_crc(copy._running_crc),
     _expectingGas22(copy._expectingGas22),
+    _gas_bus(copy._gas_bus),
     _version(copy._version),
     _tariff(copy._tariff) {
   strcpy(_power_timestamp, copy._power_timestamp);
@@ -46,6 +48,7 @@ P1Data& P1Data::operator=(const P1Data& other) {
     _status = other._status;
     _running_crc = other._running_crc;
     _expectingGas22 = other._expectingGas22;
+    _gas_bus = other._gas_bus;
     _version = other._version;
     strcpy(_power_timestamp, other._power_timestamp);
     strcpy(_serial_number_power, other._serial_number_power);
@@ -64,6 +67,7 @@ P1Data& P1Data::operator=(const P1Data& other) {
 }
 
 void P1Data::reset() {
+  _gas_bus = 1;
   _running_crc = 0;
   _expectingGas22 = false;
   _status = k_p1_empty;
@@ -223,18 +227,34 @@ void P1Data::add_data_line(const String& data_line) {
   } else if(data_line.startsWith(F("1-0:2.7.0"))) {
     // Actual export - 1-0:2.7.0(00.000*kW)
     sscanf(data_line.c_str(), "1-0:2.7.0(%10[0-9.])", _actual_export);
-  } else if(data_line.startsWith(F("0-1:96.1.0"))) {
-    // Serial number gas - 0-1:96.1.0(4730303139333430323231313938343135)
-    sscanf(data_line.c_str(), "0-1:96.1.0(%39[^)])", _serial_number_gas);
-  } else if(data_line.startsWith(F("0-1:24.2.1"))) {
-    // Gas timestamp / gas import - 0-1:24.2.1(170108160000W)(01234.000*m3)
-    sscanf(data_line.c_str(), "0-1:24.2.1(%15[^)])(%10[0-9.])", _gas_timestamp, _gas_import);
-  } else if(data_line.startsWith(F("0-1:24.3.0"))) {
-    // Gas timestamp / gas import - 0-1:24.3.0(210413190000)(00)(60)(1)(0-1:24.2.1)(m3)
-    sscanf(data_line.c_str(), "0-1:24.3.0(%15[^)])", _gas_timestamp);
-    _expectingGas22 = true;
+  } else if(data_line.startsWith(F("0-1:24.1.0(003)"))) {
+    _gas_bus = 1;
+  } else if(data_line.startsWith(F("0-2:24.1.0(003)"))) {
+    _gas_bus = 2;
+  } else if(data_line.startsWith(F("0-3:24.1.0(003)"))) {
+    _gas_bus = 3;
+  } else if(data_line.startsWith(F("0-1:96.1.0")) || data_line.startsWith(F("0-2:96.1.0")) || data_line.startsWith(F("0-3:96.1.0"))) {
+    // Serial number gas - 0-x:96.1.0(4730303139333430323231313938343135)
+    uint16_t line_bus = 0;
+    sscanf(data_line.c_str(), "0-%hu:96.1.0(", &line_bus);
+    if (line_bus == _gas_bus) {
+      sscanf(data_line.c_str(), "0-%hu:96.1.0(%39[^)])", &line_bus, _serial_number_gas);
+    }
+  } else if(data_line.startsWith(F("0-1:24.2.1")) || data_line.startsWith(F("0-2:24.2.1")) || data_line.startsWith(F("0-2:24.2.1"))) {
+    // Gas timestamp / gas import - 0-x:24.2.1(170108160000W)(01234.000*m3)
+    uint16_t line_bus = 0;
+    sscanf(data_line.c_str(), "0-%hu:24.2.1(", &line_bus);
+    if (line_bus == _gas_bus) {
+      sscanf(data_line.c_str(), "0-%hu:24.2.1(%15[^)])(%10[0-9.])", &line_bus, _gas_timestamp, _gas_import);
+    }
+  } else if(data_line.startsWith(F("0-1:24.3.0")) || data_line.startsWith(F("0-2:24.3.0")) || data_line.startsWith(F("0-2:24.3.0"))) {
+    uint16_t line_bus = 0;
+    sscanf(data_line.c_str(), "0-%hu:24.3.0(", &line_bus);
+    if (line_bus == _gas_bus) {
+      sscanf(data_line.c_str(), "0-%hu:24.3.0(%15[^)])", &line_bus, _gas_timestamp);
+      _expectingGas22 = true;
+    }
   } else if(data_line.startsWith(F("(")) && _expectingGas22) {
-    // Gas timestamp / gas import - 0-1:24.3.0(210413190000)(00)(60)(1)(0-1:24.2.1)(m3)
     sscanf(data_line.c_str(), "(%10[0-9.])", _gas_import);
     _expectingGas22 = false;
   }

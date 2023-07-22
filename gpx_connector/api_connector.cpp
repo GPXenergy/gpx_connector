@@ -90,9 +90,8 @@ ApiConnector::ApiHandlerStatus ApiConnector::send_payload(const char* payload) {
   char auth[40];
   sprintf(auth, "Token %s", _config.get_api_key());
 
-  http.addHeader("Host", API_HOST);
+  http.setUserAgent(HEADER_API_USER_AGENT);
   http.addHeader("Content-Type", HEADER_API_CONTENT_TYPE);
-  http.addHeader("User-Agent", HEADER_API_USER_AGENT);
   http.addHeader("Content-Length", content_length);
   http.addHeader("Authorization", auth);
 

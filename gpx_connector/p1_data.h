@@ -101,6 +101,7 @@ class P1Data {
   P1DataStatus _status;
   uint16_t _running_crc;
   bool _expectingGas22;  // For DSMR2.2 gas value is on a separate line
+  uint8_t _gas_bus;  // Gas device id 003, by default on bus 1 but can be different per meter
 
   // P1Data content
   uint16_t _version;
