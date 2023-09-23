@@ -32,6 +32,7 @@ class SmartMeterConnector : public Worker<P1Data> {
   Stream& _meter_connection_stream;
   String _buffer;
   uint32_t _last_read;
+  uint16_t _consecutive_fails;
 };
 
 #endif //GPXCONNECTOR_METER_CONNECTOR_H

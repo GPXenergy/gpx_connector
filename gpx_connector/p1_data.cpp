@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "p1_data.h"
+#include "debugger.h"
 
 P1Data::P1Data() :
     _status(k_p1_empty),

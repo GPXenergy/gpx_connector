@@ -38,7 +38,6 @@ void StatusLed::set_values(StatusLed::ModeColor color, double frequency, uint8_t
   if(_frequency == 0){
     set_color(_color);
   }
-  DEBUG_PRINTF("Changed LED to %d\r\n", color);
 }
 
 void StatusLed::loop() {

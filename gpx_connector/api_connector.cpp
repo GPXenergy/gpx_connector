@@ -50,13 +50,9 @@ int8_t ApiConnector::handle_produced_work(const worker_map_t& workers) {
     return e_api_reporter_idle;
   }
   if(!time_to_send()) {
-    // no new meter data or not yet time to send (or one of the workers is actually missing!)
-    DEBUG_PRINTLN("Not yet time to send...");
     return e_api_reporter_idle;
   }
   if(!meter_worker->is_fresh()) {
-    // no new meter data or not yet time to send (or one of the workers is actually missing!)
-    DEBUG_PRINTLN("No fresh data available");
     return e_api_reporter_idle;
   }
   const auto p1_data = &meter_worker->get_data();
@@ -73,7 +69,7 @@ int8_t ApiConnector::handle_produced_work(const worker_map_t& workers) {
 
 ApiConnector::ApiHandlerStatus ApiConnector::send_payload(const char* payload) {
   HTTPClient http;
-  DEBUG_PRINTLN("Trying to send data");
+  DEBUG_PRINTLN("Sending data to API");
 
   //Specify destination for HTTP request
   bool begin = _config.get_use_dev() ?
@@ -99,7 +95,7 @@ ApiConnector::ApiHandlerStatus ApiConnector::send_payload(const char* payload) {
   int httpResponseCode = http.POST(payload);
 
   String response = http.getString();
-  DEBUG_PRINTF("POST complete, status %d\r\nresponse: \r\n\r\n%s\r\n\r\n", httpResponseCode, response.c_str());
+  DEBUG_PRINTF("POST complete, status %d, response:\r\n%s\r\n\r\n", httpResponseCode, response.c_str());
   http.end();  //Free resources
 
   switch(httpResponseCode) {

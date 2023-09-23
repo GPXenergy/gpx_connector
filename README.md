@@ -9,8 +9,8 @@ through a RJ11 cable and sends the data over wifi to the GPX API.
 Check out the firmware directory for the latest firmware, separated by hardware 
 version. You will find the firmware for your specific hardware in its own directory:
 
-* gpx_connector_v1.0.7:
-  * works for prototype version
+* gpx_connector_v1 (current prototype)
+  * Latest firmware: gpx_connector_1.0.9.bin
 * ...
 
 ## Local development setup
