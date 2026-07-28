@@ -4919,7 +4919,7 @@
 			(uuid "be498643-fd55-4c43-bdc7-999b84314321")
 		)
 		(embedded_fonts no)
-		(model "C:/Users/Luke/Downloads/TW5-3-7B.stp"
+		(model "${KIPRJMOD}/3Dmodels/TW5-3-7B.stp"
 			(opacity 0.4000)
 			(offset
 				(xyz 35 25 16.5)
@@ -5743,7 +5743,7 @@
 			(uuid "5a55d3c0-1110-404e-90c5-0d103309b21d")
 		)
 		(embedded_fonts no)
-		(model "C:/Users/Luke/Downloads/51513530700f.stp"
+		(model "${KIPRJMOD}/3Dmodels/51513530700f.stp"
 			(hide yes)
 			(opacity 0.4200)
 			(offset
@@ -5756,7 +5756,7 @@
 				(xyz -90 -0 -0)
 			)
 		)
-		(model "C:/Users/Luke/Downloads/51513530625F.stp"
+		(model "${KIPRJMOD}/3Dmodels/51513530625F.stp"
 			(offset
 				(xyz 0 0 19)
 			)
